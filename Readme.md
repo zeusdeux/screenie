@@ -2,7 +2,7 @@
 
 Take screenshots of nodes or full pages by visting [`screenie.zdx.cat`](https://screenie.zdx.cat`).
 
-## Support query params
+## Supported query params
 
 ### Endpoint `GET /capture`
 

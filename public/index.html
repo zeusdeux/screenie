@@ -5,19 +5,62 @@
     <title>Screenie</title>
   </head>
   <body>
-    <h1>Welcome to screenie!</h1>
-    <p>A form will be here soon</p>
-    <p>
-      For now, you can send a <code>GET</code> to <code>https://screenie.zdx.cat/capture</code> to
-      get the screenshot.
-    </p>
-    <p>Support query params are</p>
-    <ul>
-      <li><code>src</code> <i>required</i> - source url of the website you want to capture</li>
-      <li>
-        <code>selector</code> <i>optional</i> - css selector of the element you want captured. If
-        not provided, full page screenshot is returned
-      </li>
-    </ul>
+    <article itemprop="text">
+      <h1>
+        Screenie
+      </h1>
+      <p>
+        Take screenshots of nodes or full pages by visting
+        <a href="https://screenie.zdx.cat%60" rel="nofollow"><code>screenie.zdx.cat</code></a
+        >.
+      </p>
+      <h2>
+        Supported query params
+      </h2>
+      <h3>Endpoint <code>GET /capture</code></h3>
+      <ul>
+        <li>
+          <code>src</code> (<em>required</em>) - full url of the website you want to screenshot.
+          Authenticated pages aren't supported.
+        </li>
+        <li>
+          <code>selector</code> (<em>optional</em>) - CSS selector of the node you want to
+          screenshot. Please make sure it has URL safe characters. For e.g., <code>#</code> will
+          throw it off.
+        </li>
+        <li>
+          <code>viewportWidth</code> (<em>optional</em>) - width of the headless Chrome instance
+        </li>
+        <li>
+          <code>viewportHeight</code> (<em>optional</em>) - height of the headless Chrome instance
+        </li>
+        <li>
+          <code>fullPage</code> (<em>optional</em>) - take a full page screenshot or not. Valid
+          values are <code>true</code> and <code>false</code>. Only application when no selector is
+          provided.
+        </li>
+      </ul>
+      <h2>
+        Example
+      </h2>
+      <p>
+        Element screenshot -
+        <a
+          href="https://screenie.zdx.cat/capture?src=https://mudit.xyz&amp;selector=nav%20%3E%20ul%20%3E%20li:nth-child(3)"
+          rel="nofollow"
+          ><code>/capture?src=https://mudit.xyz&amp;selector=nav &gt; ul &gt; li:nth-child(3)</code>
+        </a>
+      </p>
+      <p>
+        Full page screenshot -
+        <a
+          href="https://screenie.zdx.cat/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true"
+          rel="nofollow"
+          ><code
+            >/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true</code
+          >
+        </a>
+      </p>
+    </article>
   </body>
 </html>
