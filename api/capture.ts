@@ -13,12 +13,14 @@ interface ScreenshotOptions {
     width: number
     height: number
   }
+  fullPage: boolean
 }
 
 async function getScreenshot({
   src,
   selector,
-  viewport: { width, height }
+  viewport: { width, height },
+  fullPage = true
 }: ScreenshotOptions): Promise<Buffer> {
   console.log('Params for screenshot', { src, selector, viewport: { width, height } }) // tslint:disable-line:no-console
   const browser = await puppeteer.launch({
@@ -51,7 +53,7 @@ async function getScreenshot({
   } else {
     screenshot = await page.screenshot({
       encoding: 'binary',
-      fullPage: true
+      fullPage
     })
   }
 
@@ -77,9 +79,10 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
 
     const src = query.src as string
     const selector = (query.selector as string) || null
-    const { viewportWidth, viewportHeight } = query as ParsedUrlQuery & {
+    const { viewportWidth, viewportHeight, fullPage } = query as ParsedUrlQuery & {
       viewportWidth: string
       viewportHeight: string
+      fullPage: string
     }
     const screenshot = await getScreenshot({
       src,
@@ -87,7 +90,8 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
       viewport: {
         width: viewportWidth ? Number.parseInt(viewportWidth, 10) : 800,
         height: viewportHeight ? Number.parseInt(viewportHeight, 10) : 600
-      }
+      },
+      fullPage: fullPage ? (fullPage.toLowerCase() === 'true' ? true : false) : false
     })
     const status = 200
     res.writeHead(status, STATUS_CODES[status], {
