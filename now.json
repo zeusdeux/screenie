@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "screenie",
+  "scope": "zdx",
+  "alias": ["screenie.zdx.cat"],
+  "public": false,
+  "builds": [
+    { "src": "api/*.ts", "use": "@now/node", "config": { "maxLambdaSize": "40mb" } },
+    { "src": "public/*", "use": "@now/static" }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "methods": ["GET"],
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/capture",
+      "methods": ["GET"],
+      "dest": "/api/capture.ts"
+    },
+    {
+      "src": "/*",
+      "status": 404
+    }
+  ],
+  "env": {}
+}

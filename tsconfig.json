@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "lib": ["es2018", "dom", "dom.iterable", "scripthost"],
+    "sourceMap": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "project": "./",
+    "outDir": "./built",
+    "esModuleInterop": true,
+    "typeRoots": ["./typings", "./node_modules/@types"],
+
+    "strict": true,
+    "noEmitOnError": true,
+    "noErrorTruncation": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["api/**/*", "utils/**/*"],
+  "exclude": ["node_modules", "built/**", "**/__tests__/*"]
+}
