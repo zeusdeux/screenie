@@ -1,6 +1,6 @@
 # Screenie
 
-Take screenshots of nodes or full pages by visting [`screenie.zdx.cat`](https://screenie.zdx.cat`).
+Take screenshots of nodes or full pages by visting [`screenie.zdx.cat`](https://screenie.zdx.cat).
 
 ## Supported query params
 
