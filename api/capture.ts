@@ -20,7 +20,7 @@ async function getScreenshot({
   selector,
   viewport: { width, height }
 }: ScreenshotOptions): Promise<Buffer> {
-  console.log('Params for screenshot', { src, selector }) // tslint:disable-line:no-console
+  console.log('Params for screenshot', { src, selector, viewport: { width, height } }) // tslint:disable-line:no-console
   const browser = await puppeteer.launch({
     args: chrome.args,
     executablePath: await chrome.executablePath,
@@ -72,6 +72,8 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
       error.statusCode = 400
       throw error
     }
+
+    console.log('Received query ->', query) // tslint:disable-line:no-console
 
     const src = query.src as string
     const selector = (query.selector as string) || null
