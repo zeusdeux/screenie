@@ -68,6 +68,9 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
 
   try {
     const { query } = parseURL(req.url!, true)
+
+    console.log('Received query ->', query) // tslint:disable-line:no-console
+
     const RawQueryParamsSchema = Joi.object().keys({
       src: Joi.string()
         .uri({ scheme: ['http', 'https'] })
@@ -89,8 +92,6 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
       ;(qsValidationResult.error as Joi.ValidationError & { statusCode: number }).statusCode = 400
       throw qsValidationResult.error
     }
-
-    console.log('Received query ->', query) // tslint:disable-line:no-console
 
     const src = qsValidationResult.value.src as string
     const selector = qsValidationResult.value.selector
