@@ -24,5 +24,8 @@
       "status": 404
     }
   ],
+  "github": {
+    "enabled": true
+  },
   "env": {}
 }
