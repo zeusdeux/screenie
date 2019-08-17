@@ -2,6 +2,10 @@
 
 Take screenshots of nodes or full pages by visting [`screenie.zdx.cat`](https://screenie.zdx.cat).
 
+#### Note
+
+For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
+
 ## Supported query params
 
 ### Endpoint `GET /capture`
