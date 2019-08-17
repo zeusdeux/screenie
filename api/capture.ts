@@ -18,7 +18,7 @@ interface ScreenshotOptions {
 async function getScreenshot({
   src,
   selector,
-  viewport: { width = 800, height = 600 }
+  viewport: { width, height }
 }: ScreenshotOptions): Promise<Buffer> {
   console.log('Params for screenshot', { src, selector }) // tslint:disable-line:no-console
   const browser = await puppeteer.launch({
@@ -76,13 +76,16 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
     const src = query.src as string
     const selector = (query.selector as string) || null
     const { viewportWidth, viewportHeight } = query as ParsedUrlQuery & {
-      viewportWidth: number
-      viewportHeight: number
+      viewportWidth: string
+      viewportHeight: string
     }
     const screenshot = await getScreenshot({
       src,
       selector,
-      viewport: { width: viewportWidth, height: viewportHeight }
+      viewport: {
+        width: viewportWidth ? Number.parseInt(viewportWidth, 10) : 800,
+        height: viewportHeight ? Number.parseInt(viewportHeight, 10) : 600
+      }
     })
     const status = 200
     res.writeHead(status, STATUS_CODES[status], {
