@@ -15,9 +15,8 @@ Take screenshots of nodes or full pages by visting [`screenie.zdx.cat`](https://
 
 ## Example
 
-Element screenshot - [`/capture?src=https://mudit.xyz&selector=nav > ul >
-li:nth-child(3)`](https://screenie.zdx.cat/capture?src=https://mudit.xyz&selector=nav > ul >
-li:nth-child(3))
+Element screenshot -
+[`/capture?src=https://mudit.xyz&selector=nav > ul > li:nth-child(3)`](<https://screenie.zdx.cat/capture?src=https://mudit.xyz&selector=nav%20%3E%20ul%20%3E%20li:nth-child(3)>)
 
 Full page screenshot -
 [`/capture?src=https://stefanjudis.com&viewportWidth=1024`](https://screenie.zdx.cat/capture?src=https://stefanjudis.com&viewportWidth=1024)
