@@ -12,12 +12,18 @@
     {
       "src": "/",
       "methods": ["GET"],
-      "dest": "/public/index.html"
+      "dest": "/public/index.html",
+      "headers": {
+        "cache-control": "s-maxage=31536000"
+      }
     },
     {
       "src": "/capture",
       "methods": ["GET"],
-      "dest": "/api/capture.ts"
+      "dest": "/api/capture.ts",
+      "headers": {
+        "cache-control": "s-maxage=600, stale-while-revalidate=60"
+      }
     },
     {
       "src": "/*",
