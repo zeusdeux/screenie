@@ -1,3 +1,4 @@
+import * as Joi from '@hapi/joi'
 import { NowRequest, NowResponse } from '@now/node'
 import chrome from 'chrome-aws-lambda'
 import { STATUS_CODES } from 'http'
@@ -63,36 +64,69 @@ async function getScreenshot({
 
 export default async function(req: NowRequest, res: NowResponse): Promise<void> {
   const requestId = uuidV4()
-  try {
-    console.log('Request received with id ->', requestId) // tslint:disable-line:no-console
-    const { query } = parseURL(req.url!, true)
+  console.log('Request received with id ->', requestId) // tslint:disable-line:no-console
 
-    if (!query || !query.src) {
-      const error = new Error('Malformed query. "src" query param must be provided.') as Error & {
-        statusCode: number
-      }
-      error.statusCode = 400
-      throw error
+  try {
+    const { query } = parseURL(req.url!, true)
+    const RawQueryParamsSchema = Joi.object().keys({
+      src: Joi.string()
+        .uri({ scheme: ['http', 'https'] })
+        .required(),
+      selector: Joi.string()
+        .min(1)
+        .optional(),
+      viewportWidth: Joi.string()
+        .min(1)
+        .optional(),
+      viewportHeight: Joi.string()
+        .min(1)
+        .optional(),
+      fullPage: Joi.string().only(['true', 'false'])
+    })
+    const qsValidationResult = Joi.validate(query, RawQueryParamsSchema, { abortEarly: false })
+
+    if (qsValidationResult.error) {
+      ;(qsValidationResult.error as Joi.ValidationError & { statusCode: number }).statusCode = 400
+      throw qsValidationResult.error
     }
 
     console.log('Received query ->', query) // tslint:disable-line:no-console
 
-    const src = query.src as string
-    const selector = (query.selector as string) || null
-    const { viewportWidth, viewportHeight, fullPage } = query as ParsedUrlQuery & {
+    const src = qsValidationResult.value.src as string
+    const selector = qsValidationResult.value.selector
+      ? (qsValidationResult.value.selector as string)
+      : null
+    const {
+      viewportWidth,
+      viewportHeight,
+      fullPage
+    } = qsValidationResult.value as ParsedUrlQuery & {
       viewportWidth: string
       viewportHeight: string
       fullPage: string
     }
+
+    const parsedViewportWidth = viewportWidth ? Number.parseInt(viewportWidth, 10) : 800
+    const parsedViewportHeight = viewportHeight ? Number.parseInt(viewportHeight, 10) : 600
+
+    if (Number.isNaN(parsedViewportHeight) || Number.isNaN(parsedViewportWidth)) {
+      const error = new Error(
+        'Invalid viewportWidth or viewportHeight. They should be integers.'
+      ) as Error & { statusCode: number }
+      error.statusCode = 400
+      throw error
+    }
+
     const screenshot = await getScreenshot({
       src,
       selector,
       viewport: {
-        width: viewportWidth ? Number.parseInt(viewportWidth, 10) : 800,
-        height: viewportHeight ? Number.parseInt(viewportHeight, 10) : 600
+        width: parsedViewportWidth,
+        height: parsedViewportHeight
       },
-      fullPage: fullPage ? (fullPage.toLowerCase() === 'true' ? true : false) : false
+      fullPage: fullPage === 'true' ? true : false
     })
+
     const status = 200
     res.writeHead(status, STATUS_CODES[status], {
       'Content-Type': 'image/png',
