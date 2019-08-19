@@ -21,8 +21,8 @@ async function getScreenshot(args: ScreenshotOptions): Promise<Buffer> {
   const {
     src,
     selector,
-    viewportWidth: width,
-    viewportHeight: height,
+    viewportWidth: width = 800,
+    viewportHeight: height = 600,
     fullPage = true,
     omitBackground = false
   } = args
