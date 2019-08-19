@@ -90,6 +90,10 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
 
     if (qsValidationResult.error) {
       ;(qsValidationResult.error as Joi.ValidationError & { statusCode: number }).statusCode = 400
+      qsValidationResult.error.message = qsValidationResult.error.message.replace(
+        'child',
+        'query param'
+      )
       throw qsValidationResult.error
     }
 
