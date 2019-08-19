@@ -18,6 +18,8 @@ For large viewport width and height, chrome-aws-lambda and puppeteer-core fail a
 - `viewportHeight` (_optional_) - height of the headless Chrome instance
 - `fullPage` (_optional_) - take a full page screenshot or not. Valid values are `true` and `false`.
   Only application when no selector is provided.
+- `omitBackground` (_optional_) - hides default white background and allows capturing screenshots
+  with transparency
 
 ## Example
 

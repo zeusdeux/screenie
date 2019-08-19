@@ -3,27 +3,29 @@ import { NowRequest, NowResponse } from '@now/node'
 import chrome from 'chrome-aws-lambda'
 import { STATUS_CODES } from 'http'
 import puppeteer from 'puppeteer-core'
-import { ParsedUrlQuery } from 'querystring'
 import { parse as parseURL } from 'url'
 import { v4 as uuidV4 } from 'uuid'
 
 interface ScreenshotOptions {
   src: string
-  selector: string | null
-  viewport: {
-    width: number
-    height: number
-  }
-  fullPage: boolean
+  selector?: string
+  viewportWidth?: number
+  viewportHeight?: number
+  fullPage?: boolean
+  omitBackground?: boolean
 }
 
-async function getScreenshot({
-  src,
-  selector,
-  viewport: { width, height },
-  fullPage = true
-}: ScreenshotOptions): Promise<Buffer> {
-  console.log('Params for screenshot', { src, selector, viewport: { width, height } }) // tslint:disable-line:no-console
+async function getScreenshot(args: ScreenshotOptions): Promise<Buffer> {
+  console.log('Params for screenshot', args) // tslint:disable-line:no-console
+
+  const {
+    src,
+    selector,
+    viewportWidth: width,
+    viewportHeight: height,
+    fullPage = true,
+    omitBackground = false
+  } = args
   const browser = await puppeteer.launch({
     args: chrome.args,
     executablePath: await chrome.executablePath,
@@ -35,6 +37,7 @@ async function getScreenshot({
   })
   const page = await browser.newPage()
   let screenshot: Buffer
+
   await page.goto(src)
 
   if (selector) {
@@ -49,12 +52,14 @@ async function getScreenshot({
     }
 
     screenshot = await el.screenshot({
-      encoding: 'binary'
+      encoding: 'binary',
+      omitBackground
     })
   } else {
     screenshot = await page.screenshot({
       encoding: 'binary',
-      fullPage
+      fullPage,
+      omitBackground
     })
   }
 
@@ -62,75 +67,52 @@ async function getScreenshot({
   return screenshot
 }
 
+function parseQueryParams(url: string): ScreenshotOptions {
+  const { query } = parseURL(url, true)
+
+  console.log('Received query ->', query) // tslint:disable-line:no-console
+
+  const RawQueryParamsSchema = Joi.object().keys({
+    src: Joi.string()
+      .uri({ scheme: ['http', 'https'] })
+      .required(),
+    selector: Joi.string()
+      .min(1)
+      .optional(),
+    viewportWidth: Joi.number()
+      .positive()
+      .integer()
+      .greater(0)
+      .optional(),
+    viewportHeight: Joi.number()
+      .positive()
+      .integer()
+      .greater(0)
+      .optional(),
+    fullPage: Joi.bool().optional(),
+    omitBackground: Joi.bool().optional()
+  })
+  const result = Joi.validate(query, RawQueryParamsSchema, {
+    abortEarly: false,
+    convert: true // parse the values into the types they have been described as
+  })
+
+  if (result.error) {
+    ;(result.error as Joi.ValidationError & { statusCode: number }).statusCode = 400
+    result.error.message = result.error.message.replace('child', 'query param')
+    throw result.error
+  }
+
+  return (result.value as unknown) as ScreenshotOptions
+}
+
 export default async function(req: NowRequest, res: NowResponse): Promise<void> {
   const requestId = uuidV4()
   console.log('Request received with id ->', requestId) // tslint:disable-line:no-console
 
   try {
-    const { query } = parseURL(req.url!, true)
-
-    console.log('Received query ->', query) // tslint:disable-line:no-console
-
-    const RawQueryParamsSchema = Joi.object().keys({
-      src: Joi.string()
-        .uri({ scheme: ['http', 'https'] })
-        .required(),
-      selector: Joi.string()
-        .min(1)
-        .optional(),
-      viewportWidth: Joi.string()
-        .min(1)
-        .optional(),
-      viewportHeight: Joi.string()
-        .min(1)
-        .optional(),
-      fullPage: Joi.string().only(['true', 'false'])
-    })
-    const qsValidationResult = Joi.validate(query, RawQueryParamsSchema, { abortEarly: false })
-
-    if (qsValidationResult.error) {
-      ;(qsValidationResult.error as Joi.ValidationError & { statusCode: number }).statusCode = 400
-      qsValidationResult.error.message = qsValidationResult.error.message.replace(
-        'child',
-        'query param'
-      )
-      throw qsValidationResult.error
-    }
-
-    const src = qsValidationResult.value.src as string
-    const selector = qsValidationResult.value.selector
-      ? (qsValidationResult.value.selector as string)
-      : null
-    const {
-      viewportWidth,
-      viewportHeight,
-      fullPage
-    } = qsValidationResult.value as ParsedUrlQuery & {
-      viewportWidth: string
-      viewportHeight: string
-      fullPage: string
-    }
-
-    const parsedViewportWidth = viewportWidth ? Number.parseInt(viewportWidth, 10) : 800
-    const parsedViewportHeight = viewportHeight ? Number.parseInt(viewportHeight, 10) : 600
-
-    if (Number.isNaN(parsedViewportHeight) || Number.isNaN(parsedViewportWidth)) {
-      const error = new Error(
-        'Invalid viewportWidth or viewportHeight. They should be integers.'
-      ) as Error & { statusCode: number }
-      error.statusCode = 400
-      throw error
-    }
-
-    const screenshot = await getScreenshot({
-      src,
-      selector,
-      viewport: {
-        width: parsedViewportWidth,
-        height: parsedViewportHeight
-      },
-      fullPage: fullPage === 'true' ? true : false
-    })
+    const parsedQueryParams = parseQueryParams(req.url!)
+    const screenshot = await getScreenshot(parsedQueryParams)
 
     const status = 200
     res.writeHead(status, STATUS_CODES[status], {
@@ -146,7 +128,7 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
       requestId
     }
 
-    console.log('An error occured', { status, error, requestId }) // tslint:disable-line:no-console
+    console.log('An error occured ->', { status, error, requestId }) // tslint:disable-line:no-console
 
     const stringifiedResponse = JSON.stringify(response) + '\n'
 
@@ -156,6 +138,6 @@ export default async function(req: NowRequest, res: NowResponse): Promise<void> 
     })
     res.end(stringifiedResponse)
   } finally {
-    console.log('Reqeust with id ended ->', requestId) // tslint:disable-line:no-console
+    console.log('Request with id ended ->', requestId) // tslint:disable-line:no-console
   }
 }
