@@ -2,75 +2,137 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Screenie</title>
+    <title>Screenie - take a screenshot of a webpage or a node on a webpage</title>
+    <meta name="author" content="Mudit" />
+    <meta name="description" content="Take a screenshot of a webpage or a node on a webpage" />
+    <meta
+      name="keywords"
+      content="screenshot, puppeteer, chrome, lambda, server, zeit, now, css selector"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5rem;
+      }
+
+      header {
+        display: flex;
+        margin-bottom: 4.3rem;
+      }
+
+      header > a {
+        display: flex;
+      }
+
+      header > a > svg {
+        align-self: center;
+        margin-left: 0.92rem;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      em {
+        font-size: 0.8rem;
+      }
+    </style>
   </head>
   <body>
-    <article itemprop="text">
-      <h1>
-        Screenie
-      </h1>
-      <p>
-        Take screenshots of nodes or full pages by visting
-        <a href="https://screenie.zdx.cat" rel="nofollow"><code>screenie.zdx.cat</code></a
-        >.
-      </p>
-      <h4>
-        Note:
-      </h4>
-      <p>
-        For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
-      </p>
-      <h2>
-        Supported query params
-      </h2>
-      <h3>Endpoint <code>GET /capture</code></h3>
-      <ul>
-        <li>
-          <code>src</code> (<em>required</em>) - full url of the website you want to screenshot.
-          Authenticated pages aren't supported.
-        </li>
-        <li>
-          <code>selector</code> (<em>optional</em>) - CSS selector of the node you want to
-          screenshot. Please make sure it has URL safe characters. For e.g., <code>#</code> will
-          throw it off.
-        </li>
-        <li>
-          <code>viewportWidth</code> (<em>optional</em>) - width of the headless Chrome instance
-        </li>
-        <li>
-          <code>viewportHeight</code> (<em>optional</em>) - height of the headless Chrome instance
-        </li>
-        <li>
-          <code>fullPage</code> (<em>optional</em>) - take a full page screenshot or not. Valid
-          values are <code>true</code> and <code>false</code>. Only application when no selector is
-          provided.
-        </li>
-        <li>
-          <code>omitBackground</code> (<em>optional</em>) - hides default white background and
-          allows capturing screenshots with transparency
-        </li>
-      </ul>
-      <h2>
-        Example
-      </h2>
-      <p>
-        Element screenshot -
-        <a
-          href="https://screenie.zdx.cat/capture?src=https://mudit.xyz&amp;selector=nav%20%3E%20ul%20%3E%20li:nth-child(3)"
-          rel="nofollow"
-          ><code>/capture?src=https://mudit.xyz&amp;selector=nav &gt; ul &gt; li:nth-child(3)</code>
-        </a>
-      </p>
-      <p>
-        Full page screenshot -
-        <a
-          href="https://screenie.zdx.cat/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true"
-          rel="nofollow"
-          ><code
-            >/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true</code
+    <main>
+      <header>
+        <h1>
+          Screenie
+        </h1>
+        <a href="https://github.com/zeusdeux/screenie" target="_blank" rel="noreferrer nofollow">
+          <svg
+            class="octicon octicon-mark-github v-align-middle"
+            height="32"
+            viewBox="0 0 16 16"
+            version="1.1"
+            width="32"
+            aria-hidden="true"
           >
+            <path
+              fill-rule="evenodd"
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+            ></path>
+          </svg>
         </a>
-      </p>
-    </article>
+      </header>
+      <section>
+        <p>
+          Screenie takes a screenshot of a webpage or a node on a webpage and returns said image as
+          a <code>png</code>.
+        </p>
+        <h3>
+          Supported query params
+        </h3>
+        <h4>Endpoint <code>GET /capture</code></h4>
+        <ul>
+          <li>
+            <code>src</code> (<em>required</em>) - full url of the website you want to screenshot.
+            Authenticated pages aren't supported.
+          </li>
+          <li>
+            <code>selector</code> (<em>optional</em>) - CSS selector of the node you want to
+            screenshot. Please make sure it has URL safe characters. For e.g., <code>#</code> will
+            throw it off.
+          </li>
+          <li>
+            <code>viewportWidth</code> (<em>optional (default: <code>800px</code>)</em>) - width of
+            the headless Chrome instance.
+          </li>
+          <li>
+            <code>viewportHeight</code> (<em>optional (default: <code>600px</code>)</em>) - height
+            of the headless Chrome instance
+          </li>
+          <li>
+            <code>fullPage</code> (<em>optional (default: <code>true</code>)</em>) - take a full
+            page screenshot or not. Valid values are <code>true</code> and <code>false</code>. Only
+            application when no selector is provided.
+          </li>
+          <li>
+            <code>omitBackground</code> (<em>optional (default: <code>false</code>)</em>) - hides
+            default white background and allows capturing screenshots with transparency
+          </li>
+        </ul>
+        <h5>Note</h5>
+        <p>
+          For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
+        </p>
+        <h3>
+          Examples
+        </h3>
+        <p>
+          Element screenshot -
+          <a
+            href="https://screenie.zdx.cat/capture?src=https://mudit.xyz&amp;selector=nav%20%3E%20ul%20%3E%20li:nth-child(3)"
+            rel="nofollow"
+            ><code
+              >/capture?src=https://mudit.xyz&amp;selector=nav &gt; ul &gt; li:nth-child(3)</code
+            >
+          </a>
+        </p>
+        <p>
+          Full page screenshot -
+          <a
+            href="https://screenie.zdx.cat/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true"
+            rel="nofollow"
+            ><code
+              >/capture?src=https://stefanjudis.com&amp;viewportWidth=1024&amp;fullPage=true</code
+            >
+          </a>
+        </p>
+      </section>
+    </main>
   </body>
 </html>
