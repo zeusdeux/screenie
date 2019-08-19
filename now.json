@@ -15,7 +15,7 @@
       "dest": "/public/index.html",
       "headers": {
         "cache-control": "s-maxage=31536000",
-        "link": "</img/text_image.jpg>; as=image; rel=preload"
+        "link": "</public/img/text_image.jpg>; as=image; rel=preload"
       }
     },
     {
