@@ -6,7 +6,7 @@
   "public": false,
   "builds": [
     { "src": "api/*.ts", "use": "@now/node", "config": { "maxLambdaSize": "40mb" } },
-    { "src": "public/*", "use": "@now/static" }
+    { "src": "public/**/*", "use": "@now/static" }
   ],
   "routes": [
     {
@@ -14,8 +14,17 @@
       "methods": ["GET"],
       "dest": "/public/index.html",
       "headers": {
-        "cache-control": "s-maxage=31536000"
+        "cache-control": "s-maxage=31536000",
+        "link": "</img/text_image.jpg>; as=image; rel=preload"
       }
+    },
+    {
+      "src": "/public/img/(.*)",
+      "methods": ["GET"],
+      "headers": {
+        "cache-control": "s-maxage=31536000, max-age=31536000"
+      },
+      "dest": "/public/img/$1"
     },
     {
       "src": "/capture",
