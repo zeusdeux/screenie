@@ -103,7 +103,11 @@ function parseQueryParams(url: string): ScreenshotOptions {
     throw result.error
   }
 
-  return (result.value as unknown) as ScreenshotOptions
+  const parsedValue = (result.value as unknown) as ScreenshotOptions
+
+  console.log('Parsed query params ->', parsedValue) // tslint:disable-line:no-console
+
+  return parsedValue
 }
 
 export default async function(req: NowRequest, res: NowResponse): Promise<void> {
