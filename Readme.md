@@ -3,13 +3,11 @@
 Take screenshots of nodes, full pages or custom dimensions by visting
 [`screenie.zdx.cat`](https://screenie.zdx.cat).
 
-#### Note
+> The logo image above was generated for this screenie readme by screenie itself ;)
 
-For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
+## Endpoint `GET /capture`
 
-## Supported query params
-
-### Endpoint `GET /capture`
+### Supported query params
 
 - `src` (_required_) - full url of the website you want to screenshot. Authenticated pages aren't
   supported.
@@ -21,6 +19,10 @@ For large viewport width and height, chrome-aws-lambda and puppeteer-core fail a
   Only application when no selector is provided.
 - `omitBackground` (_optional_) - hides default white background and allows capturing screenshots
   with transparency
+  
+#### Note
+
+For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
 
 ## Example
 
