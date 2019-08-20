@@ -16,9 +16,9 @@ Take screenshots of nodes, full pages or custom dimensions by visting
 - `viewportWidth` (_optional_) - width of the headless Chrome instance
 - `viewportHeight` (_optional_) - height of the headless Chrome instance
 - `fullPage` (_optional_) - take a full page screenshot or not. Valid values are `true` and `false`.
-  Only application when no selector is provided.
+  Only used when no selector is provided.
 - `omitBackground` (_optional_) - hides default white background and allows capturing screenshots
-  with transparency
+  with transparency. Valid values are `true` and `false`.
   
 #### Note
 
