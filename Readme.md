@@ -1,4 +1,4 @@
-![screenie](https://screenie.zdx.cat/capture?src=https://screenie.zdx.cat&selector=header&omitBackground=true&viewportWidth=800)
+![screenie](https://screenie.zdx.cat/capture?src=https://screenie.zdx.cat&selector=header&omitBackground=true&viewportWidth=1200)
 
 Take screenshots of nodes, full pages or custom dimensions by visting
 [`screenie.zdx.cat`](https://screenie.zdx.cat).
@@ -19,7 +19,7 @@ Take screenshots of nodes, full pages or custom dimensions by visting
   Only used when no selector is provided.
 - `omitBackground` (_optional_) - hides default white background and allows capturing screenshots
   with transparency. Valid values are `true` and `false`.
-  
+
 #### Note
 
 For large viewport width and height, chrome-aws-lambda and puppeteer-core fail and throw.
