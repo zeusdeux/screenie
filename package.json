@@ -7,27 +7,30 @@
     "prettier": "prettier --config ./.prettierrc --write \"{src,test,bin,lib,config}/**/*.{ts,json,css,html,md}\""
   },
   "devDependencies": {
-    "@now/node": "^0.12.6",
-    "@types/hapi__joi": "^15.0.3",
-    "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.2",
+    "@now/node": "^0.12.8",
+    "@types/hapi__joi": "^15.0.4",
+    "@types/jest": "^24.9.0",
+    "@types/node": "^12.12.25",
     "@types/puppeteer-core": "^1.9.0",
-    "@types/uuid": "^3.4.5",
-    "husky": "^3.0.3",
+    "@types/uuid": "^3.4.6",
+    "husky": "^3.1.0",
     "jest": "^24.9.0",
-    "lint-staged": "^9.2.1",
+    "lint-staged": "^9.5.0",
     "prettier": "1.18.2",
     "rimraf": "^3.0.0",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.18.0",
+    "ts-jest": "^24.3.0",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "@hapi/joi": "^15.1.1",
-    "chrome-aws-lambda": "^1.19.0",
-    "puppeteer-core": "^1.19.0",
-    "uuid": "^3.3.2"
+    "chrome-aws-lambda": "^2.0.2",
+    "puppeteer-core": "^2.0.0",
+    "uuid": "^3.4.0"
+  },
+  "engines": {
+    "node": "12.x"
   },
   "husky": {
     "hooks": {
